@@ -5,7 +5,8 @@ const send = async (listCusOpt, cusInfo) => {
 
     const emails = [
         "21522328@gm.uit.edu.vn",
-        "vanmanh0888@gmail.com"
+        "vanmanh0888@gmail.com",
+        "21522200@gm.uit.edu.vn"
     ]
 
     var transport = nodemailer.createTransport({
