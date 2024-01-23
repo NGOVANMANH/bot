@@ -25,11 +25,10 @@ login(loginPath, (err, api) => {
                 isFirstMsg = false;
                 const userID = message.threadID;
                 _userID = userID;
-                api.getUserInfo(userID, (err, user) => {
+                api.getUserInfo(userID, async (err, user) => {
                     cusInfo = user[userID];
-                    api.sendMessage(`Xin chào ${user[userID].name}, tôi là BOT đến từ Viettel Contruction. Tôi ở đây để tư vấn cho bạn những dịch vụ chúng tôi có!`, userID);
+                    await api.sendMessage(`Xin chào ${user[userID].name}, tôi là BOT đến từ Viettel Contruction. Tôi ở đây để tư vấn cho bạn những dịch vụ chúng tôi có!`, userID);
                     setTimeout(() => {
-                        api.sendMessage(`Đợi tôi một chút, để tôi list các dịch vụ bên chúng tôi cho bạn chọn`, userID);
                         listDichVu.map(dichVu => {
                             api.sendMessage(`${dichVu.MaDV} - ${dichVu.TenDV} - ${dichVu.GiaTien}Đ`, userID);
                         })
@@ -49,9 +48,6 @@ login(loginPath, (err, api) => {
                     api.sendMessage("Bạn muốn tư vấn lại thì gửi tin nhắn: --restart", _userID);
                     api.sendMessage(`Bạn đã chọn tư vấn ${listChooseDichVu.join(', ')}`, _userID);
 
-                    // Tìm nhân viên rảnh rồi gửi mail đến nhân viên vào tư vấn 
-
-                    // send email đến nhân viên
                     let listDvOpt = listChooseDichVu.map(item => listDichVu.find(dv => dv.MaDV === item));
                     send(listDvOpt, cusInfo);
 
