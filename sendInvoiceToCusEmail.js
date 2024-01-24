@@ -1,14 +1,15 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const { createInvoice } = require('./createInvoice');
-const { invoice } = require('./invoiceInfor');
-
+const { getInvoiceFromSheet } = require('./interractiveGGSheet');
 
 const send = async () => {
 
+    const invoice = await getInvoiceFromSheet('DH002');
+
     createInvoice(invoice, "invoice.pdf");
 
-    const emails = ["21522328@gm.uit.edu.vn"];
+    const emails = [invoice.shipping.email];
 
     const currentDate = new Date();
     const paymentDate = new Date(currentDate);
@@ -159,8 +160,8 @@ const send = async () => {
                                 </td>
     
                                 <td>
-                                    Ngô Văn Mạnh<br />
-                                    ManhCoder<br />
+                                    ${invoice.shipping.name}<br />
+                                    ${invoice.shipping.address}<br />
                                     ${emails.join(", ")}
                                 </td>
                             </tr>
@@ -170,44 +171,29 @@ const send = async () => {
     
                 <tr class="heading">
                     <td>Phương thức thanh toán</td>
-    
                     <td>Tiền</td>
                 </tr>
     
                 <tr class="details">
-                    <td>Check</td>
-    
-                    <td>1000</td>
+                    <td>Card</td>
+                    <td>${invoice.subtotal.toLocaleString('vi-VN')} Đ</td>
                 </tr>
     
                 <tr class="heading">
                     <td>Dịch vụ</td>
-    
                     <td>Giá</td>
                 </tr>
     
+                ${invoice.items.map(item => `
                 <tr class="item">
-                    <td>Website design</td>
-    
-                    <td>$300.00</td>
+                    <td>${item.description}</td>
+                    <td>${item.amount.toLocaleString('vi-VN')} Đ</td>
                 </tr>
-    
-                <tr class="item">
-                    <td>Hosting (3 months)</td>
-    
-                    <td>$75.00</td>
-                </tr>
-    
-                <tr class="item last">
-                    <td>Domain name (1 year)</td>
-    
-                    <td>$10.00</td>
-                </tr>
+                `).join("")}
     
                 <tr class="total">
-                    <td></td>
-    
-                    <td><b>Tổng tiền</b>: $385.00</td>
+                    <td style="text-align: right"><b>Tổng tiền</b>:</td>
+                    <td>${invoice.subtotal.toLocaleString('vi-VN')} Đ</td>
                 </tr>
             </table>
         </div>

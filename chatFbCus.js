@@ -3,7 +3,7 @@ const login = require('facebook-chat-api');
 const { getListDichVu } = require('./interractiveGGSheet');
 const { send } = require('./sendEmailToCRM');
 
-const loginPath = { appState: JSON.parse(fs.readFileSync("./appstate.json"), "utf-8") }
+const loginPath = { appState: JSON.parse(fs.readFileSync("./appstate.json", "utf-8")) }
 
 let listDichVu;
 async function getDichVu() {
@@ -45,14 +45,15 @@ login(loginPath, (err, api) => {
                 if (message.body.toLowerCase().includes('choose-')) {
                     let listChooseDichVu = message.body.toUpperCase().split('-');
                     listChooseDichVu.shift();
-                    api.sendMessage("Bạn muốn tư vấn lại thì gửi tin nhắn: --restart", _userID);
+                    api.sendMessage("Bạn muốn tư vấn lại thì gửi tin nhắn: /restart", _userID);
                     api.sendMessage(`Bạn đã chọn tư vấn ${listChooseDichVu.join(', ')}`, _userID);
+                    api.sendMessage(`Cảm ơn bạn đã chọn tư vấn! Vui lòng chờ một tý để nhân viên bên tôi liên hệ tư vấn.`, _userID);
 
                     let listDvOpt = listChooseDichVu.map(item => listDichVu.find(dv => dv.MaDV === item));
                     send(listDvOpt, cusInfo);
 
                 }
-                else if (message.body.toLowerCase().includes('--restart')) {
+                else if (message.body.toLowerCase().includes('/restart')) {
                     isFirstMsg = true;
                 }
             }

@@ -1,13 +1,15 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
-const { invoice } = require('./invoiceInfor');
 const { createInvoice } = require('./createInvoice');
+const { getInvoiceFromSheet } = require('./interractiveGGSheet');
 
 const send = async () => {
 
+    const invoice = await getInvoiceFromSheet('DH002');
+
     createInvoice(invoice, "invoice.pdf");
 
-    const emails = ["21522328@gm.uit.edu.vn"];
+    const emails = [invoice.shipping.email];
 
     var transport = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -20,7 +22,7 @@ const send = async () => {
 
     const paymentContent = "Quý khách vui lòng kiểm tra kĩ thông tin trước khi thanh toán, và chụp lại kết quả sau khi thanh toán";
 
-    const total = 10000;
+    const total = invoice.subtotal;
     const qrDataURL = `https://img.vietqr.io/image/VCB-1025884939-print.png?amount=${total}`;
 
     const bodyHtml = `

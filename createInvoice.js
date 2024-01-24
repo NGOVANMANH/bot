@@ -1,5 +1,6 @@
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
+const unidecode = require('unidecode');
 
 function createInvoice(invoice, path) {
     let doc = new PDFDocument({ size: "A4", margin: 50 });
@@ -35,7 +36,7 @@ function generateCustomerInformation(doc, invoice) {
 
     doc
         .fontSize(10)
-        .text("Invoice Number:", 50, customerInformationTop)
+        .text("Invoice ID:", 50, customerInformationTop)
         .font("Helvetica-Bold")
         .text(invoice.invoice_nr, 150, customerInformationTop)
         .font("Helvetica")
@@ -49,18 +50,9 @@ function generateCustomerInformation(doc, invoice) {
         )
 
         .font("Helvetica-Bold")
-        .text(invoice.shipping.name, 300, customerInformationTop)
+        .text(unidecode(invoice.shipping.name), 300, customerInformationTop)
         .font("Helvetica")
-        .text(invoice.shipping.address, 300, customerInformationTop + 15)
-        .text(
-            invoice.shipping.city +
-            ", " +
-            invoice.shipping.state +
-            ", " +
-            invoice.shipping.country,
-            300,
-            customerInformationTop + 30
-        )
+        .text(unidecode(invoice.shipping.address), 300, customerInformationTop + 15)
         .moveDown();
 
     generateHr(doc, 252);
@@ -88,7 +80,7 @@ function generateInvoiceTable(doc, invoice) {
             doc,
             position,
             item.item,
-            item.description,
+            unidecode(item.description),
             formatCurrency(item.amount),
         );
 
@@ -160,7 +152,7 @@ function generateHr(doc, y) {
 }
 
 function formatCurrency(cents) {
-    return `${(cents)} d`;
+    return `${(cents.toLocaleString('vi-VN'))} D`;
 }
 
 function formatDate(date) {

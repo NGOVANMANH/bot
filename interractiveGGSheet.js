@@ -1,6 +1,7 @@
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 const { JWT } = require("google-auth-library");
 const dotenv = require('dotenv');
+const { invoice } = require("./invoiceInfor");
 
 dotenv.config();
 
@@ -117,10 +118,50 @@ async function luuThongTinDonHang(maDonHang, tenKhachHang, soDienThoai, email, n
     }
 }
 
+async function getInvoiceFromSheet(maDonHang) {
+    try {
+        let donHangs = await getListDonHang();
+        const listDichVu = await getListDichVu();
+        donHangs = donHangs.filter(item => item.MaDH === maDonHang);
+        let cusInfo;
+        let items;
+        let subtotal = 0;
+        cusInfo = {
+            name: donHangs[0].TenKH || "John Doe",
+            email: donHangs[0].Email,
+            phone: donHangs[0].SDT,
+            address: donHangs[0].DiaChi || "1234 Main Street",
+            postal_code: 70000
+        }
+
+        items = donHangs.map(donHang => {
+            const dichVu = listDichVu.find(item => item.MaDV === donHang.MaDV);
+            const total = +dichVu.GiaTien.replace(/\./g, '') || 0;
+            subtotal += total;
+            return {
+                item: dichVu.MaDV || "Ma Dich Vu",
+                description: dichVu.TenDV || "Toner Cartridge",
+                amount: total
+            }
+        })
+
+        return {
+            shipping: cusInfo,
+            items,
+            subtotal,
+            paid: 0,
+            invoice_nr: maDonHang
+        }
+    } catch (error) {
+        console.error("Error:", error.message);
+    }
+}
+
 module.exports = {
     getListDichVu,
     getListDonHang,
     getListHoaDon,
     getMoneyByMaDichVu,
-    luuThongTinDonHang
+    luuThongTinDonHang,
+    getInvoiceFromSheet
 }
