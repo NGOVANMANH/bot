@@ -36,7 +36,7 @@ Dự án này sử dụng các thư viện và công nghệ sau:
 ## Cấu Hình
 
 1. Tạo một tiệp `.env` trong thư mục dự án và cung cấp các thông tin môi trường cần thiết:
-
+    ```bash
     USER=<email_google_app>
     APP_PASS=<app_password_google>
     GOOGLE_SERVICE_ACCOUNT_EMAIL=
@@ -48,6 +48,7 @@ Dự án này sử dụng các thư viện và công nghệ sau:
     Sau khi lấy file json thì nhớ copy mảng cookie và sửa key = "name" thành "key".
 
     Ví dụ:
+    ```bash
     [
         {
             "domain": ".facebook.com",
@@ -68,6 +69,7 @@ Dự án này sử dụng các thư viện và công nghệ sau:
 
 3. Chạy các file bot cần cho bạn:
 
+    ```bash
     node <tenfile>.js
 
 ## Chú Ý:
