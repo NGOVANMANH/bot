@@ -39,7 +39,7 @@ const send = async () => {
     `;
 
     transport.sendMail({
-        from: "Thanh toán qua một lần quét",
+        from: "Viettel Contruction",
         to: emails,
         subject: "Thanh Toán Hóa Đơn Viettel Contruction",
         html: bodyHtml,

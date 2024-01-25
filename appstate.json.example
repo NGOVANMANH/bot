@@ -1,0 +1,16 @@
+[
+    {
+        "domain": ".facebook.com",
+        "expirationDate": ,
+        "hostOnly": false,
+        "httpOnly": true,
+        "key": "sb",
+        "path": "/",
+        "sameSite": "no_restriction",
+        "secure": true,
+        "session": false,
+        "storeId": "0",
+        "value": ""
+    },
+    ...
+]
