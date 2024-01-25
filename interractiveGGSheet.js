@@ -101,17 +101,17 @@ async function getMoneyByMaDichVu(maDichVu) {
     }
 }
 
-async function luuThongTinDonHang(maDonHang, tenKhachHang, soDienThoai, email, ngayThucThi, maDichVu) {
+async function luuThongTinDonHang(donHang) {
     try {
         await docDonHang.loadInfo();
         const sheet = docDonHang.sheetsById[0];
         sheet.addRow({
-            MaDH: maDonHang,
-            TenKH: tenKhachHang,
-            SDT: soDienThoai,
-            Email: email,
-            NgayThucThi: ngayThucThi,
-            MaDV: maDichVu
+            MaDH: donHang.MaDH,
+            TenKH: donHang.TenKH,
+            SDT: donHang.SDT,
+            Email: donHang.Email,
+            NgayThucThi: donHang.NgayThucThi || formatDate(new Date()),
+            MaDV: donHang.MaDV
         });
     } catch (error) {
         console.error("Error:", error.message);
@@ -157,11 +157,42 @@ async function getInvoiceFromSheet(maDonHang) {
     }
 }
 
+async function saveInvoice(invoice) {
+    try {
+        await docHoaDon.loadInfo();
+        const sheet = docHoaDon.sheetsById[0];
+        invoice.items.map(item => {
+            sheet.addRow({
+                MaDH: invoice.invoice_nr,
+                MaDV: item.item,
+                TenKH: invoice.shipping.name,
+                TenDV: item.description,
+                SDT: invoice.shipping.phone,
+                Email: invoice.shipping.email,
+                NgayThucThi: formatDate(new Date()),
+                GiaTien: invoice.subtotal,
+                NgayThanhToan: formatDate(new Date())
+            });
+        })
+    } catch (error) {
+        console.error("Error:", error.message);
+    }
+}
+
+function formatDate(date) {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    return year + "/" + month + "/" + day;
+}
+
 module.exports = {
     getListDichVu,
     getListDonHang,
     getListHoaDon,
     getMoneyByMaDichVu,
     luuThongTinDonHang,
-    getInvoiceFromSheet
+    getInvoiceFromSheet,
+    saveInvoice
 }
